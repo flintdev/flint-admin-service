@@ -12,7 +12,7 @@ else:
         long_description = f.read()
 
 version = {}
-with open(os.path.join(_here, 'handler', 'version.py')) as f:
+with open(os.path.join(_here, 'admin_service', 'version.py')) as f:
     exec(f.read(), version)
 
 setup(
@@ -24,9 +24,10 @@ setup(
     author_email='daigx1990@gmail.com',
     url='https://github.com/flintdev/flint-admin-service',
     license='Apache License 2.0',
-    packages=['handler'],
+    packages=['admin_service'],
     install_requires=[
-      'kubernetes==11.0.0',
+        'flask==1.1.2',
+        'kubernetes==11.0.0',
     ],
     include_package_data=True,
     classifiers=[
