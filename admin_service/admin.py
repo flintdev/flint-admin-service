@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from admin_service.functions import get_token
+import os
 
 application = Flask(__name__)
 flint_authentication = ""
@@ -52,7 +53,13 @@ class App:
 
     @staticmethod
     def start():
-        application.run(host='0.0.0.0', port='5000', debug=True)
+        debug = os.getenv("DEBUG")
+        if debug == "true":
+            application.config["DEBUG"] = True
+            application.config["ENV"] = "development"
+            application.run(host='0.0.0.0', port='5000')
+        else:
+            application.run(host='0.0.0.0', port='5000')
 
 
 def create_app():
