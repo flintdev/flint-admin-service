@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from admin_service.functions import get_token
 import os
+from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 
 application = Flask(__name__)
 flint_authentication = ""
 
+config.load_kube_config()
+api_instance = client.VersionApi()
 
 class App:
 
@@ -52,14 +56,28 @@ class App:
         return jsonify(response)
 
     @staticmethod
+    @application.route('/health')
+    def health():
+        try:
+            api_response = api_instance.get_code()
+            response = {
+                "status": "available"
+            }
+        except ApiException as e:
+            response = {
+                "status": "unavailable"
+            }
+        return jsonify(response)
+
+    @staticmethod
     def start():
         debug = os.getenv("DEBUG")
         if debug == "true":
             application.config["DEBUG"] = True
             application.config["ENV"] = "development"
-            application.run(host='0.0.0.0', port='5000')
+            application.run(host='0.0.0.0', port='8080')
         else:
-            application.run(host='0.0.0.0', port='5000')
+            application.run(host='0.0.0.0', port='8080')
 
 
 def create_app():
